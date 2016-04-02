@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>GPU Based SSGD Matrix Factorization by lchoung</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+  </head>
+  <body>
+    <section class="page-header">
+      <h1 class="project-name">GPU Based SSGD Matrix Factorization</h1>
+      <h2 class="project-tagline">GPU Based Large Scale Matrix Factorization with Stochastic Gradient Descent</h2>
+      <a href="https://github.com/lchoung/matrix-ssgd" class="btn">View on GitHub</a>
+      <a href="https://github.com/lchoung/matrix-ssgd/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/lchoung/matrix-ssgd/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
+
+    <section class="main-content">
+      <h3>
+<a id="proposal" class="anchor" href="#proposal" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Proposal</h3>
+
+<p>GPU Based Large Scale Matrix Factorization with Stochastic Gradient Descent</p>
+
+<p>Lillian Choung (lchoung)</p>
+
+<h3>
+<a id="summary" class="anchor" href="#summary" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Summary</h3>
+
+<p>I plan to implement a parallel and distributed version of Non-Negative Matrix Factorization using the Stratified Stochastic Gradient Descent algorithm configuration with CUDA.</p>
+
+<h3>
+<a id="background" class="anchor" href="#background" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Background</h3>
+
+<p>Matrix factorization has applications in document clustering, recommendations, and signal processing. The core idea involves breaking a matrix M down to latent factor matrices A and B such that AB approximates M as much as possible according to some loss function L (potentially with some regularization to avoid overfitting). </p>
+
+<p>To find A and B, I will use the Stochastic Gradient Descent method. The following repeats until convergence:</p>
+
+<p><code>For each matrix square in M:</code></p>
+
+<p><code>--&gt; Calculate the loss of the square in AB, compared to M.</code></p>
+
+<p><code>--&gt; Adjust the elements of A and B that contribute towards the square, opposite the direction of the gradient.</code></p>
+
+<p>An alternative to pure SGD is Stratified Stochastic Gradient Descent, as proposed by <a href="http://people.mpi-inf.mpg.de/%7Ergemulla/publications/gemulla11dsgd.pdf">Gemulla et. al.</a>. We can block a matrix and perform operations on each block concurrently, by selecting blocks whose necessary adjustments in A and B will not coincide with each other. We will use CUDA to parallelize these operations on blocks. </p>
+
+<h3>
+<a id="challenge" class="anchor" href="#challenge" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Challenge</h3>
+
+<p>The one main challenge I foresee in this project:</p>
+
+<ol>
+<li><p>Since matrices large enough to warrant GPU speedup may prove to be billions of rows long, they may not fit in memory of a single computer. I may have to investigate a method of speaking between several GPUs (i.e. MPI). </p></li>
+<li><p>Following (1): I must synchronize the values of A and B at the end of each iteration if I move towards a distributed CUDA system. The benefit of staying on GPU is that it lacks the latency of copying memory back and forth. Therefore, I will need to be careful about communication overhead. </p></li>
+</ol>
+
+<h3>
+<a id="resources" class="anchor" href="#resources" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Resources</h3>
+
+<p><a href="http://people.mpi-inf.mpg.de/%7Ergemulla/publications/gemulla11dsgd.pdf">SSGD: Gemulla et. al.</a>
+<a href="http://www.almaden.ibm.com/cs/people/peterh/dsgdTechRep.pdf">Article on SSGD</a></p>
+
+<p><a href="http://www.cse.buffalo.edu/faculty/miller/Courses/CSE710/heavner.pdf">OpenMPI + CUDA example</a></p>
+
+<p>I plan to run experiments upon the latedays cluster. </p>
+
+<h3>
+<a id="goals" class="anchor" href="#goals" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Goals</h3>
+
+<ol>
+<li><p>Implement parallelized SSGD on CUDA for one machine</p></li>
+<li><p>Distribute on multiple machines with MPI</p></li>
+<li><p>Compare performance on <a href="http://academictorrents.com/details/9b13183dc4d60676b773c9e2cd6de5e5542cee9a">Netflix set</a> with in-memory R and Hadoop implementations mentioned in Gemulla. (If time)</p></li>
+</ol>
+
+<h3>
+<a id="timeline" class="anchor" href="#timeline" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Timeline</h3>
+
+<pre><code>Week 1: Achieve familiarity with tools / Implement SSGD on CUDA (one machine)
+Week 2: Implement SSGD on CUDA
+Week 3: Distributed implementations with MPI
+Week 4: Distributed implementation with MPI
+Week 5: Tuning parameters/Testing + Final paper
+</code></pre>
+
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/lchoung/matrix-ssgd">GPU Based SSGD Matrix Factorization</a> is maintained by <a href="https://github.com/lchoung">lchoung</a>.</span>
+
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
+
+    </section>
+
+  
+  </body>
+</html>
