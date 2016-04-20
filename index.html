@@ -93,16 +93,21 @@ Over the last two weeks, I've:
 <li><p>Written the kernel that indexes into a block-and-chunk sorted list of tuples, and updates parameters after calculating the gradient. </p></li>
 <li><p>Written the iteration logic that chooses which blocks run on which worker. </p></li>
 
+<br>
 I also started using some Thrust library functions to preprocess the data (sorting and then collecting by worker ID key), which I hadn't planned on using while writing the proposal.
 
+<br>
 I am a bit behind the schedule proposed in Proposal, because I am having trouble finding a space-efficient and fast way to take my input of (row, column, entry) tuples of my input matrix and transform it into the sorted format that would allow a CUDA kernel to index into the sorted list and retrieve the right entries on each iteration. 
 My previous attempt used an "array of structures" and I'm refactoring to make it a "structure of arrays" instead. I also in my planning assumed the existence of some sort of key-pair data type in CUDA, which doesn't exist so I have to figure out how to put it all into a 1D vector. This is one of the main concerns right now.
 
+<br>
 Because of this complication, I'm not sure whether it is realistic to be able to get a multi-machine version of this running. I can also try to optimise the one machine version of this code, by experimenting more with the data storage and the worker partitioning part of the code. 
 
+<br>
 This current version of my code assumes that all the data can fit on the GPU memory. 
 In the next few weeks my priorities are:
 
+<br>
 <li><p> Rest of this week: Fix the data wrangling </p></li>
 <li><p> Sunday-Wednesday: Find ways to save space on the GPU, or potentially copy data back and forth from the CPU? </p></li>
 <li><p> Thursday-Sunday: Implementation with large dataset bigger than GPU memory. </p></li>
